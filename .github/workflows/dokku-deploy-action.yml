@@ -17,6 +17,11 @@ on:
         type: string
         description: 'Branch to deploy'
         default: 'main'
+      dockerfile_path:
+        required: false
+        type: string
+        description: 'Path to the Dockerfile relative to the repository root'
+        default: './Dockerfile'
     secrets:
       DOKKU_HOST:
         required: true
@@ -63,6 +68,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
+          file: ${{ inputs.dockerfile_path }}
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ inputs.docker_image_name }}:${{ github.sha }}
 

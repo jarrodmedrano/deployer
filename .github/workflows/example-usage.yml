@@ -12,10 +12,11 @@ on:
 
 jobs:
   deploy:
-    uses: your-username/deployer/.github/workflows/dokku-deploy-action.yml@main
+    uses: jarrodmedrano/deployer/.github/workflows/dokku-deploy-action.yml@main
     with:
       app_name: ${{ github.event.repository.name }}
       branch: ${{ inputs.branch || 'main' }}
+      dockerfile_path: './Dockerfile'
     secrets:
       DOKKU_HOST: ${{ secrets.DOKKU_HOST }}
       DOKKU_DEPLOY_KEY: ${{ secrets.DOKKU_DEPLOY_KEY }}
