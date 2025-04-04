@@ -1,0 +1,75 @@
+name: Dokku Deploy Action
+
+on:
+  workflow_call:
+    inputs:
+      app_name:
+        required: true
+        type: string
+        description: 'Dokku app name to deploy to'
+      docker_image_name:
+        required: false
+        type: string
+        description: 'Docker image name (defaults to repository name)'
+        default: ${{ github.event.repository.name }}
+      branch:
+        required: false
+        type: string
+        description: 'Branch to deploy'
+        default: 'main'
+    secrets:
+      DOKKU_HOST:
+        required: true
+        description: 'Dokku host IP or domain'
+      DOKKU_DEPLOY_KEY:
+        required: true
+        description: 'SSH deploy key for Dokku app'
+      DOCKERHUB_USERNAME:
+        required: true
+        description: 'Docker Hub username'
+      DOCKERHUB_TOKEN:
+        required: true
+        description: 'Docker Hub access token'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.branch }}
+
+      - name: Set up SSH for Dokku
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DOKKU_DEPLOY_KEY }}
+
+      - name: Add Dokku host to known hosts
+        run: |
+          echo "${{ secrets.DOKKU_HOST }} ssh-rsa $(ssh-keyscan -t rsa ${{ secrets.DOKKU_HOST }} 2>/dev/null | cut -d' ' -f2-)" >> ~/.ssh/known_hosts
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ inputs.docker_image_name }}:${{ github.sha }}
+
+      - name: Deploy to Dokku
+        run: |
+          # Deploy the image to Dokku
+          ssh -o StrictHostKeyChecking=accept-new dokku@${{ secrets.DOKKU_HOST }} git:from-image ${{ inputs.app_name }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ inputs.docker_image_name }}:${{ github.sha }}
+
+          # Ensure the app is running
+          ssh dokku@${{ secrets.DOKKU_HOST }} ps:start ${{ inputs.app_name }}
