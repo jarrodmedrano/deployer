@@ -241,50 +241,59 @@ resource "terraform_data" "dokku_apps" {
 }
 
 # Create a terraform_data resource to configure Let's Encrypt
-# resource "terraform_data" "dokku_letsencrypt" {
-#   # Use local-exec to run commands on the remote server
-#   provisioner "local-exec" {
-#     command = <<-EOT
-#       # Configure Let's Encrypt for each app
-#       %{ for app in var.apps ~}
-#       echo "Configuring Let's Encrypt for app: ${app.name}"
-#       ssh -i "${var.ssh_private_key_path}" -o StrictHostKeyChecking=no -o PasswordAuthentication=no -o PubkeyAuthentication=yes root@${vultr_instance.dokku.main_ip} "
-#         export PATH=\$PATH:/usr/bin:/usr/local/bin
+resource "terraform_data" "dokku_letsencrypt" {
+  # Use local-exec to run commands on the remote server
+  provisioner "local-exec" {
+    command = <<-EOT
+      # Configure Let's Encrypt for each app
+      %{ for app in var.apps ~}
+      echo "Configuring Let's Encrypt for app: ${app.name}"
+      ssh -i "${var.ssh_private_key_path}" -o StrictHostKeyChecking=no -o PasswordAuthentication=no -o PubkeyAuthentication=yes root@${vultr_instance.dokku.main_ip} "
+        export PATH=\$PATH:/usr/bin:/usr/local/bin
         
-#         # Configure Let's Encrypt
-#         dokku config:set --no-restart ${app.name} DOKKU_LETSENCRYPT_EMAIL=${var.letsencrypt_email}
-#         dokku letsencrypt:set ${app.name} email ${var.letsencrypt_email}
-        
-#         # Wait for DNS propagation
-#         echo 'Waiting for DNS propagation for ${app.domain}...'
-#         while ! host ${app.domain} | grep -q '${vultr_instance.dokku.main_ip}'; do
-#           echo 'DNS not propagated yet for ${app.domain}, waiting 30 seconds...'
-#           sleep 30
-#         done
-#         echo 'DNS propagated for ${app.domain}'
-        
-#         # Additional wait for DNS cache
-#         echo 'Waiting an additional minute for DNS caches...'
-#         sleep 60
-        
-#         # Enable Let's Encrypt
-#         dokku letsencrypt:enable ${app.name} || {
-#           echo 'Let'\''s Encrypt failed. Current DNS resolution:'
-#           host ${app.domain}
-#           echo 'Expected IP: ${vultr_instance.dokku.main_ip}'
-#           exit 1
-#         }
-#       "
-#       %{ endfor ~}
-#     EOT
-#   }
+        # Only proceed if the domain is not empty and is a valid domain
+        if [ ! -z '${app.domain}' ] && [[ '${app.domain}' =~ ^[a-zA-Z0-9][a-zA-Z0-9-]+\.[a-zA-Z]{2,}$ ]]; then
+          # Remove any hostname-based domains to prevent Let's Encrypt from trying to encrypt them
+          dokku domains:remove ${app.name} ${var.hostname}
+          dokku domains:remove ${app.name} ${app.name}.${var.hostname}
+          
+          # Configure Let's Encrypt
+          dokku config:set --no-restart ${app.name} DOKKU_LETSENCRYPT_EMAIL=${var.letsencrypt_email}
+          dokku letsencrypt:set ${app.name} email ${var.letsencrypt_email}
+          
+          # Wait for DNS propagation
+          echo 'Waiting for DNS propagation for ${app.domain}...'
+          while ! host ${app.domain} | grep -q '${vultr_instance.dokku.main_ip}'; do
+            echo 'DNS not propagated yet for ${app.domain}, waiting 30 seconds...'
+            sleep 30
+          done
+          echo 'DNS propagated for ${app.domain}'
+          
+          # Additional wait for DNS cache
+          echo 'Waiting an additional minute for DNS caches...'
+          sleep 60
+          
+          # Enable Let's Encrypt
+          dokku letsencrypt:enable ${app.name} || {
+            echo 'Let'\''s Encrypt failed. Current DNS resolution:'
+            host ${app.domain}
+            echo 'Expected IP: ${vultr_instance.dokku.main_ip}'
+            exit 1
+          }
+        else
+          echo 'Skipping Let'\''s Encrypt for ${app.name} - no valid domain configured'
+        fi
+      "
+      %{ endfor ~}
+    EOT
+  }
 
-#   # Input values that should trigger a replacement
-#   input = {
-#     instance_id = vultr_instance.dokku.id
-#     apps = var.apps
-#   }
+  # Input values that should trigger a replacement
+  input = {
+    instance_id = vultr_instance.dokku.id
+    apps = var.apps
+  }
 
-#   # Ensure this runs after the apps are created
-#   depends_on = [terraform_data.dokku_apps]
-# } 
+  # Ensure this runs after the apps are created
+  depends_on = [terraform_data.dokku_apps]
+} 
