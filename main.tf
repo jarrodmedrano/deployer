@@ -245,6 +245,16 @@ resource "terraform_data" "dokku_letsencrypt" {
   # Use local-exec to run commands on the remote server
   provisioner "local-exec" {
     command = <<-EOT
+      # Enable Let's Encrypt auto-renewal cron job first
+      echo "Enabling Let's Encrypt auto-renewal cron job..."
+      ssh -i "${var.ssh_private_key_path}" -o StrictHostKeyChecking=no -o PasswordAuthentication=no -o PubkeyAuthentication=yes root@${vultr_instance.dokku.main_ip} "
+        export PATH=\$PATH:/usr/bin:/usr/local/bin
+        
+        # Add cron job for automatic certificate renewal (runs daily at 2am)
+        dokku letsencrypt:cron-job --add
+        echo 'Auto-renewal cron job enabled'
+      "
+
       # Configure Let's Encrypt for each app
       %{ for app in var.apps ~}
       echo "Configuring Let's Encrypt for app: ${app.name}"
