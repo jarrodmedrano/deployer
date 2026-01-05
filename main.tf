@@ -222,9 +222,6 @@ resource "terraform_data" "dokku_apps" {
         dokku proxy:enable ${app.name}
         dokku ports:set ${app.name} http:80:5000
         dokku proxy:build-config ${app.name}
-        
-        # Configure nginx
-        dokku nginx:set ${app.name} hsts false
       "
       %{ endfor ~}
     EOT
