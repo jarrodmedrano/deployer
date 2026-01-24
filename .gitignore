@@ -27,4 +27,8 @@ terraform.rc
 .terraform.lock.hcl
 
 # Ignore example tfvars
-!example.tfvars 
+!example.tfvars
+.claude
+
+# Git worktrees
+.worktrees
