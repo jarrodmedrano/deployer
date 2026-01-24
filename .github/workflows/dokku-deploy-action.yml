@@ -72,6 +72,39 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ inputs.docker_image_name }}:${{ github.sha }}
 
+      - name: Run database migrations
+        run: |
+          # Pull the newly built image to Dokku server
+          ssh dokku@${{ secrets.DOKKU_HOST }} "docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ inputs.docker_image_name }}:${{ github.sha }}"
+
+          # Check if package.json has a migrate script
+          HAS_MIGRATE=$(ssh dokku@${{ secrets.DOKKU_HOST }} "docker run --rm ${{ secrets.DOCKERHUB_USERNAME }}/${{ inputs.docker_image_name }}:${{ github.sha }} sh -c 'if [ -f package.json ] && grep -q \"\\\"migrate\\\"\" package.json; then echo yes; else echo no; fi'")
+
+          if [ "$HAS_MIGRATE" = "yes" ]; then
+            echo "Migration script found, running migrations..."
+
+            # Export Dokku config to temporary file
+            ENV_FILE="/tmp/${{ inputs.app_name }}-env-${{ github.sha }}"
+            ssh dokku@${{ secrets.DOKKU_HOST }} "dokku config:export ${{ inputs.app_name }} --merged > $ENV_FILE && chmod 600 $ENV_FILE"
+
+            # Run migrations
+            ssh dokku@${{ secrets.DOKKU_HOST }} "docker run --rm --env-file $ENV_FILE ${{ secrets.DOCKERHUB_USERNAME }}/${{ inputs.docker_image_name }}:${{ github.sha }} npm run migrate"
+            MIGRATION_EXIT=$?
+
+            # Clean up temporary env file
+            ssh dokku@${{ secrets.DOKKU_HOST }} "rm -f $ENV_FILE"
+
+            # Exit if migration failed
+            if [ $MIGRATION_EXIT -ne 0 ]; then
+              echo "Migration failed with exit code $MIGRATION_EXIT"
+              exit $MIGRATION_EXIT
+            fi
+
+            echo "Migrations completed successfully"
+          else
+            echo "No migration script found in package.json, skipping migrations"
+          fi
+
       - name: Deploy to Dokku
         run: |
           # Deploy the image to Dokku
