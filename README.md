@@ -82,11 +82,19 @@ Add a `migrate` script to your project's `package.json`:
 
 Or for other tools:
 
+**Drizzle:**
 ```json
 {
   "scripts": {
-    "migrate": "drizzle-kit push",
-    // or
+    "migrate": "drizzle-kit push"
+  }
+}
+```
+
+**Custom script:**
+```json
+{
+  "scripts": {
     "migrate": "node scripts/migrate.js"
   }
 }
