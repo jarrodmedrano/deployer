@@ -26,7 +26,15 @@
 ### Scenario 3: Migration failure
 **Setup:**
 - Create project with intentionally failing migration
-- Example: SQL syntax error, constraint violation
+- Example using Prisma: Create migration with invalid SQL syntax
+  ```sql
+  -- Invalid: duplicate column name
+  CREATE TABLE test_users (
+    id INT PRIMARY KEY,
+    id INT  -- duplicate column
+  );
+  ```
+- Or add `"migrate": "exit 1"` to package.json scripts for simple test
 
 **Expected:**
 - Migration fails with non-zero exit code
@@ -45,7 +53,15 @@
 ## Manual Testing Steps
 
 1. Create test app in Dokku: `dokku apps:create test-migrations`
-2. Link database: `dokku postgres:link test-db test-migrations`
-3. Deploy using workflow with each scenario above
-4. Verify behavior matches expectations
-5. Clean up: `dokku apps:destroy test-migrations`
+2. Create test database: `dokku postgres:create test-db`
+3. Link database: `dokku postgres:link test-db test-migrations`
+4. Deploy using workflow with each scenario above
+5. Verify behavior matches expectations:
+   - Check GitHub Actions logs
+   - For successful migrations: Look for "Migrations completed successfully"
+   - For skipped migrations: Look for "No migration script found"
+   - For failed migrations: Look for "Migration failed with exit code"
+6. Clean up:
+   - `dokku postgres:unlink test-db test-migrations`
+   - `dokku apps:destroy test-migrations`
+   - `dokku postgres:destroy test-db`
