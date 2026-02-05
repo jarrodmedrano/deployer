@@ -81,8 +81,13 @@ jobs:
 
           # Check Docker daemon availability
           if ! ssh dokku@${{ secrets.DOKKU_HOST }} "docker info > /dev/null 2>&1"; then
-            echo "Error: Docker daemon is not available on Dokku server"
-            exit 1
+            echo "Warning: Docker daemon is not available on Dokku server"
+            echo "Skipping pre-deployment migrations. Migrations will run after deployment if configured."
+            echo ""
+            echo "To fix this, run on your Dokku server:"
+            echo "  sudo usermod -aG docker dokku"
+            echo "  sudo systemctl restart docker"
+            exit 0
           fi
 
           # Pull the newly built image to Dokku server
