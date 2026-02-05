@@ -35,6 +35,9 @@ on:
       DOCKERHUB_TOKEN:
         required: true
         description: 'Docker Hub access token'
+      BETTER_AUTH_SECRET:
+        required: false
+        description: 'Better Auth secret for authentication'
 
 jobs:
   deploy:
