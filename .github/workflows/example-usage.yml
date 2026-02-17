@@ -22,3 +22,7 @@ jobs:
       DOKKU_DEPLOY_KEY: ${{ secrets.DOKKU_DEPLOY_KEY }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      # Forward all generic app secrets (add as needed)
+      BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+      # Add more secrets here as needed for your app/environment
+      # For multi-environment, use GitHub Environments and define secrets per environment

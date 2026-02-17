@@ -38,6 +38,63 @@ on:
       BETTER_AUTH_SECRET:
         required: false
         description: 'Better Auth secret for authentication'
+      BETTER_AUTH_URL:
+        required: false
+        description: 'Better Auth URL'
+      NEXT_PUBLIC_APP_URL:
+        required: false
+        description: 'Next.js public app URL'
+      DATABASE_HOST:
+        required: false
+        description: 'Database host'
+      DATABASE_USER:
+        required: false
+        description: 'Database user'
+      DATABASE_PORT:
+        required: false
+        description: 'Database port'
+      DATABASE_SECRET:
+        required: false
+        description: 'Database secret'
+      DATABASE_NAME:
+        required: false
+        description: 'Database name'
+      CLOUDINARY_CLOUD_NAME:
+        required: false
+        description: 'Cloudinary cloud name'
+      CLOUDINARY_API_KEY:
+        required: false
+        description: 'Cloudinary API key'
+      CLOUDINARY_API_SECRET:
+        required: false
+        description: 'Cloudinary API secret'
+      FACEBOOK_CLIENT_ID:
+        required: false
+        description: 'Facebook client ID'
+      FACEBOOK_CLIENT_SECRET:
+        required: false
+        description: 'Facebook client secret'
+      APPLE_CLIENT_ID:
+        required: false
+        description: 'Apple client ID'
+      APPLE_CLIENT_SECRET:
+        required: false
+        description: 'Apple client secret'
+      CLERK_SECRET_KEY:
+        required: false
+        description: 'Clerk secret key'
+      SENDGRID_API_KEY:
+        required: false
+        description: 'SendGrid API key'
+      OPENAI_API_KEY:
+        required: false
+        description: 'OpenAI API key'
+      GOOGLE_CLIENT_SECRET:
+        required: false
+        description: 'Google client secret'
+      FACEBOOK_SECRET:
+        required: false
+        description: 'Facebook secret'
 
 jobs:
   deploy:
