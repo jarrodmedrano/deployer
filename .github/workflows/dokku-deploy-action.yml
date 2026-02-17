@@ -131,6 +131,27 @@ jobs:
           file: ${{ inputs.dockerfile_path }}
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ inputs.docker_image_name }}:${{ github.sha }}
+          build-args: |
+            BETTER_AUTH_SECRET=${{ secrets.BETTER_AUTH_SECRET }}
+            BETTER_AUTH_URL=${{ secrets.BETTER_AUTH_URL }}
+            NEXT_PUBLIC_APP_URL=${{ secrets.NEXT_PUBLIC_APP_URL }}
+            DATABASE_HOST=${{ secrets.DATABASE_HOST }}
+            DATABASE_USER=${{ secrets.DATABASE_USER }}
+            DATABASE_PORT=${{ secrets.DATABASE_PORT }}
+            DATABASE_SECRET=${{ secrets.DATABASE_SECRET }}
+            DATABASE_NAME=${{ secrets.DATABASE_NAME }}
+            CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}
+            CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}
+            CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}
+            FACEBOOK_CLIENT_ID=${{ secrets.FACEBOOK_CLIENT_ID }}
+            FACEBOOK_CLIENT_SECRET=${{ secrets.FACEBOOK_CLIENT_SECRET }}
+            APPLE_CLIENT_ID=${{ secrets.APPLE_CLIENT_ID }}
+            APPLE_CLIENT_SECRET=${{ secrets.APPLE_CLIENT_SECRET }}
+            CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}
+            SENDGRID_API_KEY=${{ secrets.SENDGRID_API_KEY }}
+            OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+            GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+            FACEBOOK_SECRET=${{ secrets.FACEBOOK_SECRET }}
 
       - name: Run database migrations
         run: |
