@@ -95,6 +95,18 @@ on:
       FACEBOOK_SECRET:
         required: false
         description: 'Facebook secret'
+      STRIPE_SECRET_KEY:
+        required: false
+        description: 'Stripe secret key'
+      STRIPE_WEBHOOK_SECRET:
+        required: false
+        description: 'Stripe webhook secret'
+      STRIPE_MONTHLY_PRICE_ID:
+        required: false
+        description: 'Stripe monthly price ID'
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
+        required: false
+        description: 'Stripe publishable key'
 
 jobs:
   deploy:
@@ -152,6 +164,10 @@ jobs:
             OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
             GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
             FACEBOOK_SECRET=${{ secrets.FACEBOOK_SECRET }}
+            STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}
+            STRIPE_WEBHOOK_SECRET=${{ secrets.STRIPE_WEBHOOK_SECRET }}
+            STRIPE_MONTHLY_PRICE_ID=${{ secrets.STRIPE_MONTHLY_PRICE_ID }}
+            NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
 
       - name: Run database migrations
         run: |
