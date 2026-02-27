@@ -243,3 +243,32 @@ jobs:
 
           # Ensure the app is running
           ssh dokku@${{ secrets.DOKKU_HOST }} ps:start ${{ inputs.app_name }}
+
+      - name: Set Dokku environment variables
+        run: |
+          ssh dokku@${{ secrets.DOKKU_HOST }} \
+            config:set ${{ inputs.app_name }} \
+            BETTER_AUTH_SECRET='${{ secrets.BETTER_AUTH_SECRET }}' \
+            BETTER_AUTH_URL='${{ secrets.BETTER_AUTH_URL }}' \
+            NEXT_PUBLIC_APP_URL='${{ secrets.NEXT_PUBLIC_APP_URL }}' \
+            DATABASE_HOST='${{ secrets.DATABASE_HOST }}' \
+            DATABASE_USER='${{ secrets.DATABASE_USER }}' \
+            DATABASE_PORT='${{ secrets.DATABASE_PORT }}' \
+            DATABASE_SECRET='${{ secrets.DATABASE_SECRET }}' \
+            DATABASE_NAME='${{ secrets.DATABASE_NAME }}' \
+            CLOUDINARY_CLOUD_NAME='${{ secrets.CLOUDINARY_CLOUD_NAME }}' \
+            CLOUDINARY_API_KEY='${{ secrets.CLOUDINARY_API_KEY }}' \
+            CLOUDINARY_API_SECRET='${{ secrets.CLOUDINARY_API_SECRET }}' \
+            FACEBOOK_CLIENT_ID='${{ secrets.FACEBOOK_CLIENT_ID }}' \
+            FACEBOOK_CLIENT_SECRET='${{ secrets.FACEBOOK_CLIENT_SECRET }}' \
+            APPLE_CLIENT_ID='${{ secrets.APPLE_CLIENT_ID }}' \
+            APPLE_CLIENT_SECRET='${{ secrets.APPLE_CLIENT_SECRET }}' \
+            CLERK_SECRET_KEY='${{ secrets.CLERK_SECRET_KEY }}' \
+            SENDGRID_API_KEY='${{ secrets.SENDGRID_API_KEY }}' \
+            OPENAI_API_KEY='${{ secrets.OPENAI_API_KEY }}' \
+            GOOGLE_CLIENT_SECRET='${{ secrets.GOOGLE_CLIENT_SECRET }}' \
+            FACEBOOK_SECRET='${{ secrets.FACEBOOK_SECRET }}' \
+            STRIPE_SECRET_KEY='${{ secrets.STRIPE_SECRET_KEY }}' \
+            STRIPE_WEBHOOK_SECRET='${{ secrets.STRIPE_WEBHOOK_SECRET }}' \
+            STRIPE_MONTHLY_PRICE_ID='${{ secrets.STRIPE_MONTHLY_PRICE_ID }}' \
+            NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY='${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}'
