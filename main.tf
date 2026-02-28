@@ -209,6 +209,20 @@ resource "terraform_data" "dokku_apps" {
         # Create and link PostgreSQL database
         dokku postgres:create ${app.name}-db || true
         dokku postgres:link ${app.name}-db ${app.name}
+
+        # Set database environment variables
+        DB_INFO=$(dokku postgres:info ${app.name}-db --format json)
+        export DATABASE_HOST=$(echo $DB_INFO | jq -r '.host')
+        export DATABASE_NAME=$(echo $DB_INFO | jq -r '.database')
+        export DATABASE_PORT=$(echo $DB_INFO | jq -r '.port')
+        export DATABASE_SECRET=$(echo $DB_INFO | jq -r '.password')
+        export DATABASE_USER=$(echo $DB_INFO | jq -r '.user')
+        dokku config:set ${app.name} \
+          DATABASE_HOST=$DATABASE_HOST \
+          DATABASE_NAME=$DATABASE_NAME \
+          DATABASE_PORT=$DATABASE_PORT \
+          DATABASE_SECRET=$DATABASE_SECRET \
+          DATABASE_USER=$DATABASE_USER
         
         # Configure global hostname
         dokku domains:set-global ${var.hostname}
