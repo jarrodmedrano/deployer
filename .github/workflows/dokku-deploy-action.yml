@@ -107,6 +107,9 @@ on:
       NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
         required: false
         description: 'Stripe publishable key'
+      DATABASE_URL:
+        required: false
+        description: 'Database connection URL (overrides individual DB secrets if provided)'
 
 jobs:
   deploy:
@@ -168,6 +171,7 @@ jobs:
             STRIPE_WEBHOOK_SECRET=${{ secrets.STRIPE_WEBHOOK_SECRET }}
             STRIPE_MONTHLY_PRICE_ID=${{ secrets.STRIPE_MONTHLY_PRICE_ID }}
             NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
 
       - name: Run database migrations
         run: |
