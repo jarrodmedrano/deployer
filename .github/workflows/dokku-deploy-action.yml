@@ -107,6 +107,9 @@ on:
       NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
         required: false
         description: 'Stripe publishable key'
+      NEXT_PUBLIC_GTM_ID:
+        required: false
+        description: 'GTM tag'
 
 jobs:
   deploy:
@@ -168,6 +171,7 @@ jobs:
             STRIPE_WEBHOOK_SECRET=${{ secrets.STRIPE_WEBHOOK_SECRET }}
             STRIPE_MONTHLY_PRICE_ID=${{ secrets.STRIPE_MONTHLY_PRICE_ID }}
             NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
+            NEXT_PUBLIC_GTM_ID=${{ secrets.NEXT_PUBLIC_GTM_ID }}
 
       - name: Deploy to Dokku
         run: |
