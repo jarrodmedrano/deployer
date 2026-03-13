@@ -110,6 +110,15 @@ on:
       NEXT_PUBLIC_GTM_ID:
         required: false
         description: 'GTM tag'
+      API_KEY_ENCRYPTION_KEY:
+        required: false
+        description: 'API key encryption key'
+      AI_PROVIDER:
+        required: false
+        description: 'AI provider'
+      AI_MODEL:
+        required: false
+        description: 'AI model'
 
 jobs:
   deploy:
@@ -172,6 +181,9 @@ jobs:
             STRIPE_MONTHLY_PRICE_ID=${{ secrets.STRIPE_MONTHLY_PRICE_ID }}
             NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
             NEXT_PUBLIC_GTM_ID=${{ secrets.NEXT_PUBLIC_GTM_ID }}
+            API_KEY_ENCRYPTION_KEY=${{ secrets.API_KEY_ENCRYPTION_KEY }}
+            AI_PROVIDER=${{ secrets.AI_PROVIDER }}
+            AI_MODEL=${{ secrets.AI_MODEL }}
 
       - name: Deploy to Dokku
         run: |
