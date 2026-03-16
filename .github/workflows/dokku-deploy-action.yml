@@ -119,6 +119,12 @@ on:
       AI_MODEL:
         required: false
         description: 'AI model'
+      RESEND_API_KEY:
+        required: false
+        description: 'Resend API key'
+      RESEND_FROM_EMAIL:
+        required: false
+        description: 'Resend from email address'
 
 jobs:
   deploy:
@@ -184,6 +190,8 @@ jobs:
             API_KEY_ENCRYPTION_KEY=${{ secrets.API_KEY_ENCRYPTION_KEY }}
             AI_PROVIDER=${{ secrets.AI_PROVIDER }}
             AI_MODEL=${{ secrets.AI_MODEL }}
+            RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
+            RESEND_FROM_EMAIL=${{ secrets.RESEND_FROM_EMAIL }}
 
       - name: Deploy to Dokku
         run: |
