@@ -125,6 +125,24 @@ on:
       RESEND_FROM_EMAIL:
         required: false
         description: 'Resend from email address'
+      APPLE_ID:
+        required: false
+        description: 'Apple ID'
+      APPLE_TEAM_ID:
+        required: false
+        description: 'Apple team ID'
+      APPLE_PRIVATE_KEY:
+        required: false
+        description: 'Apple private key'
+      APPLE_KEY_ID:
+        required: false
+        description: 'Apple key ID'
+      FACEBOOK_ID:
+        required: false
+        description: 'Facebook app ID'
+      GOOGLE_CLIENT_ID:
+        required: false
+        description: 'Google client ID'
 
 jobs:
   deploy:
@@ -192,6 +210,12 @@ jobs:
             AI_MODEL=${{ secrets.AI_MODEL }}
             RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
             RESEND_FROM_EMAIL=${{ secrets.RESEND_FROM_EMAIL }}
+            APPLE_ID=${{ secrets.APPLE_ID }}
+            APPLE_TEAM_ID=${{ secrets.APPLE_TEAM_ID }}
+            APPLE_PRIVATE_KEY=${{ secrets.APPLE_PRIVATE_KEY }}
+            APPLE_KEY_ID=${{ secrets.APPLE_KEY_ID }}
+            FACEBOOK_ID=${{ secrets.FACEBOOK_ID }}
+            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
 
       - name: Deploy to Dokku
         run: |
