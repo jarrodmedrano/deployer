@@ -143,6 +143,12 @@ on:
       GOOGLE_CLIENT_ID:
         required: false
         description: 'Google client ID'
+      NEXT_PUBLIC_GOOGLE_RECAPTCHA_KEY:
+        required: false
+        description: 'Google reCAPTCHA site key'
+      GOOGLE_RECAPTCHA_SECRET:
+        required: false
+        description: 'Google reCAPTCHA secret key'
 
 jobs:
   deploy:
@@ -216,6 +222,8 @@ jobs:
             APPLE_KEY_ID=${{ secrets.APPLE_KEY_ID }}
             FACEBOOK_ID=${{ secrets.FACEBOOK_ID }}
             GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+            NEXT_PUBLIC_GOOGLE_RECAPTCHA_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_RECAPTCHA_KEY }}
+            GOOGLE_RECAPTCHA_SECRET=${{ secrets.GOOGLE_RECAPTCHA_SECRET }}
 
       - name: Deploy to Dokku
         run: |
